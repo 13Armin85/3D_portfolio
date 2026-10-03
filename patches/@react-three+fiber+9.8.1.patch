@@ -1,0 +1,162 @@
+diff --git a/node_modules/@react-three/fiber/dist/events-21d8cd92.cjs.dev.js b/node_modules/@react-three/fiber/dist/events-21d8cd92.cjs.dev.js
+index 9b43bdf..ec9af8a 100644
+--- a/node_modules/@react-three/fiber/dist/events-21d8cd92.cjs.dev.js
++++ b/node_modules/@react-three/fiber/dist/events-21d8cd92.cjs.dev.js
+@@ -1076,7 +1076,48 @@ const createStore = (invalidate, advance) => {
+       linear: false,
+       flat: false,
+       controls: null,
+-      clock: new THREE__namespace.Clock(),
++      // R3F 9 compatibility: preserve its clock API using the supported Three.js Timer.
++      clock: (() => {
++        const timer = new THREE__namespace.Timer();
++        return {
++          autoStart: true,
++          startTime: 0,
++          oldTime: 0,
++          elapsedTime: 0,
++          running: false,
++          start() {
++            timer.reset();
++            this.startTime = performance.now();
++            this.oldTime = this.startTime;
++            this.elapsedTime = 0;
++            this.running = true;
++          },
++          stop() {
++            this.getElapsedTime();
++            this.running = false;
++            this.autoStart = false;
++          },
++          getElapsedTime() {
++            this.getDelta();
++            return this.elapsedTime;
++          },
++          getDelta() {
++            if (this.autoStart && !this.running) {
++              this.start();
++              return 0;
++            }
++            if (!this.running) return 0;
++            timer.update();
++            const delta = timer.getDelta();
++            this.oldTime = performance.now();
++            this.elapsedTime += delta;
++            return delta;
++          },
++          dispose() {
++            timer.dispose();
++          }
++        };
++      })(),
+       pointer,
+       mouse: pointer,
+       frameloop: 'always',
+diff --git a/node_modules/@react-three/fiber/dist/events-9ce18a08.esm.js b/node_modules/@react-three/fiber/dist/events-9ce18a08.esm.js
+index ea6b4c9..12a3857 100644
+--- a/node_modules/@react-three/fiber/dist/events-9ce18a08.esm.js
++++ b/node_modules/@react-three/fiber/dist/events-9ce18a08.esm.js
+@@ -1051,7 +1051,48 @@ const createStore = (invalidate, advance) => {
+       linear: false,
+       flat: false,
+       controls: null,
+-      clock: new THREE.Clock(),
++      // R3F 9 compatibility: preserve its clock API using the supported Three.js Timer.
++      clock: (() => {
++        const timer = new THREE.Timer();
++        return {
++          autoStart: true,
++          startTime: 0,
++          oldTime: 0,
++          elapsedTime: 0,
++          running: false,
++          start() {
++            timer.reset();
++            this.startTime = performance.now();
++            this.oldTime = this.startTime;
++            this.elapsedTime = 0;
++            this.running = true;
++          },
++          stop() {
++            this.getElapsedTime();
++            this.running = false;
++            this.autoStart = false;
++          },
++          getElapsedTime() {
++            this.getDelta();
++            return this.elapsedTime;
++          },
++          getDelta() {
++            if (this.autoStart && !this.running) {
++              this.start();
++              return 0;
++            }
++            if (!this.running) return 0;
++            timer.update();
++            const delta = timer.getDelta();
++            this.oldTime = performance.now();
++            this.elapsedTime += delta;
++            return delta;
++          },
++          dispose() {
++            timer.dispose();
++          }
++        };
++      })(),
+       pointer,
+       mouse: pointer,
+       frameloop: 'always',
+diff --git a/node_modules/@react-three/fiber/dist/events-a816cbab.cjs.prod.js b/node_modules/@react-three/fiber/dist/events-a816cbab.cjs.prod.js
+index c26a227..297b6a5 100644
+--- a/node_modules/@react-three/fiber/dist/events-a816cbab.cjs.prod.js
++++ b/node_modules/@react-three/fiber/dist/events-a816cbab.cjs.prod.js
+@@ -1076,7 +1076,48 @@ const createStore = (invalidate, advance) => {
+       linear: false,
+       flat: false,
+       controls: null,
+-      clock: new THREE__namespace.Clock(),
++      // R3F 9 compatibility: preserve its clock API using the supported Three.js Timer.
++      clock: (() => {
++        const timer = new THREE__namespace.Timer();
++        return {
++          autoStart: true,
++          startTime: 0,
++          oldTime: 0,
++          elapsedTime: 0,
++          running: false,
++          start() {
++            timer.reset();
++            this.startTime = performance.now();
++            this.oldTime = this.startTime;
++            this.elapsedTime = 0;
++            this.running = true;
++          },
++          stop() {
++            this.getElapsedTime();
++            this.running = false;
++            this.autoStart = false;
++          },
++          getElapsedTime() {
++            this.getDelta();
++            return this.elapsedTime;
++          },
++          getDelta() {
++            if (this.autoStart && !this.running) {
++              this.start();
++              return 0;
++            }
++            if (!this.running) return 0;
++            timer.update();
++            const delta = timer.getDelta();
++            this.oldTime = performance.now();
++            this.elapsedTime += delta;
++            return delta;
++          },
++          dispose() {
++            timer.dispose();
++          }
++        };
++      })(),
+       pointer,
+       mouse: pointer,
+       frameloop: 'always',
